@@ -3,27 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLM Agent UI</title>
+    <title>Sleek LLM Agent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* Simple CSS for basic styling */
-        body { font-family: sans-serif; margin: 20px; }
-        #query-form { margin-bottom: 20px; }
-        #query-input { width: 80%; padding: 8px; }
-        #send-button { padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        #results-container { border: 1px solid #ccc; padding: 15px; min-height: 100px; background-color: #f9f9f9; }
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #6C757D;
+            --background-color: #F4F7F6;
+            --card-background: #FFFFFF;
+            --border-color: #E0E0E0;
+            --text-color: #333333;
+            --light-text-color: #666666;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: var(--text-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        #query-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        #query-input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #query-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        #send-button {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #send-button:hover {
+            background-color: #3A7BBF;
+            transform: translateY(-2px);
+        }
+
+        #send-button:active {
+            transform: translateY(0);
+        }
+
+        #results-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            min-height: 150px;
+            background-color: var(--background-color);
+            color: var(--light-text-color);
+            line-height: 1.6;
+            overflow-y: auto;
+            max-height: 400px; /* Limit height for scrollability */
+        }
+
+        #results-container p {
+            margin: 0;
+            padding-bottom: 10px;
+        }
+
+        #results-container p:last-child {
+            padding-bottom: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            #query-form {
+                flex-direction: column;
+            }
+
+            #send-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            #query-input, #send-button {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>LLM Agent Query</h1>
+    <div class="container">
+        <h1>✨ LLM Agent Console ✨</h1>
 
-    <div id="query-form">
-        <input type="text" id="query-input" placeholder="Enter your query...">
-        <button id="send-button">Send Query</button>
-    </div>
+        <div id="query-form">
+            <input type="text" id="query-input" placeholder="Ask your LLM agent anything..." aria-label="Enter your query">
+            <button id="send-button" aria-label="Send Query">Send Query</button>
+        </div>
 
-    <h2>Results:</h2>
-    <div id="results-container">
-        <p>Your LLM agent responses will appear here.</p>
+        <h2>Agent Responses:</h2>
+        <div id="results-container" role="log" aria-live="polite">
+            <p>Your LLM agent responses will appear here. Start by typing a question above!</p>
+        </div>
     </div>
 
     <script src="script.js"></script>
