@@ -1,1 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
 .env
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+.DS_Store # macOS specific
