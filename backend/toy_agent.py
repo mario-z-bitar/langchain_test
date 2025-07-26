@@ -50,14 +50,14 @@ async def run_llm_chain(query: str) -> Dict[str, Any]:
         for tool_call in ai_msg.tool_calls:
             selected_tool = {"add": add, "multiply": multiply}[tool_call["name"].lower()]
             # Ensure tool_call["args"] is a dictionary and unpack it
-            tool_msg_content = selected_tool.invoke(**tool_call["args"])
+            tool_msg_content = selected_tool.invoke(tool_call["args"]) # Removed the ** (double-asterisk)
             tool_results.append({
                 "tool_name": tool_call["name"],
                 "args": tool_call["args"],
                 "result": tool_msg_content
             })
             # Add ToolMessage to the messages for the final invoke
-            messages.append(ToolMessage(tool_message=str(tool_msg_content), tool_call_id=tool_call["id"]))
+            messages.append(ToolMessage(content=str(tool_msg_content), tool_call_id=tool_call["id"]))
 
     final_response = await llm_with_tools.ainvoke(messages) # Use ainvoke for async
 
@@ -88,6 +88,10 @@ app.add_middleware(
     allow_methods=["*"], # Allows all methods (GET, POST, etc.)
     allow_headers=["*"], # Allows all headers
 )
+# NEW: Simple test endpoint to check if FastAPI and CORS are working
+@app.get("/ping")
+async def ping():
+    return {"message": "pong"}
 
 # NEW: Pydantic model to define the expected request body for our API
 class QueryInput(BaseModel):

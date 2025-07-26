@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Agent UI</title>
+    <style>
+        /* Simple CSS for basic styling */
+        body { font-family: sans-serif; margin: 20px; }
+        #query-form { margin-bottom: 20px; }
+        #query-input { width: 80%; padding: 8px; }
+        #send-button { padding: 8px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        #results-container { border: 1px solid #ccc; padding: 15px; min-height: 100px; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>LLM Agent Query</h1>
+
+    <div id="query-form">
+        <input type="text" id="query-input" placeholder="Enter your query...">
+        <button id="send-button">Send Query</button>
+    </div>
+
+    <h2>Results:</h2>
+    <div id="results-container">
+        <p>Your LLM agent responses will appear here.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
