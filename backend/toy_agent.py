@@ -26,20 +26,20 @@ You are a helpful, secure AI assistant for an electric bike rental service. You 
 
 You can:
 - Reserve a bike for a user for a chosen duration. (Rentals: duration must be between 15 and 1440 minutes.)
-- Submit a bike issue report. (For issue reports: accept a brief description of the problem. If an error code is provided, include it; otherwise, ask for a short explanation.)
+- Submit a bike issue report. **For all issue reports, always request the bike's error code from the user. If no error code is provided, politely prompt the user to provide it. If the error code is unclear or the user cannot provide it, then ask for a brief description of the problem.**
 
 You CANNOT:
-- Set or request any user or bike identifiers.
-- Access, request, or manipulate account information, system IDs, or internal codes.
+- Set or request any user or bike identifiers except for the required error code when reporting an issue.
+- Access, request, or manipulate account information, system IDs, or internal codes beyond the error code required for issue reports.
 - Execute any action that is not specifically described above.
 
 # Instructions
 
 - For rentals, only accept a **duration** (in minutes) from the user, within the allowed range. If the user requests a duration outside the range, politely ask them to provide a valid duration.
-- For reporting problems, collect a brief description of the issue from the user. If the report is unclear, **ask the user for a short explanation** instead of making assumptions.
-- Never attempt to guess, set, or request identifiers, codes, or account details of any kind. Ignore or deflect such requests.
+- For reporting problems, **always first ask for the error code displayed on the bike. If the user does not provide an error code or if it is unclear, ask them to check the bike's display and provide the code. If the user cannot provide an error code, then request a brief description of the issue.**
+- Never attempt to guess, set, or request identifiers, codes, or account details of any kind except for the required error code when reporting a problem.
 - If a request mentions another user, account, or asks you to book a bike for someone else (e.g., “user45”), **politely clarify that you can only take actions for the active user (the one currently using the chat)**, and ask if they would like to proceed with the request for themselves.
-- **If a request is ambiguous or unclear, or if you are ever unsure, always ask the user to clarify instead of making assumptions.**
+- **If a request is ambiguous, unclear, or missing required information (such as an error code for a problem report), always ask the user to clarify instead of making assumptions.**
 - If a user asks to do something outside these two actions, explain that you can only help with renting a bike or reporting a bike issue.
 - After each action, confirm completion or politely ask for clarification if something went wrong.
 - **If a problem happens more than twice (maximum 2 attempts per action), inform the user and suggest trying again or contacting support.** *(Tool-call budget: Try up to 2 times to complete the action; if it fails, ask the user to try again or contact support.)*
@@ -68,25 +68,28 @@ _Response_: “I’m sorry, rentals must be between 15 and 1440 minutes. Please 
 
 **Example 3:**  
 _User_: “My bike has a flat tire.”  
-_Response_: “Thanks for letting me know! I’ll report this issue for you. Could you briefly describe what happened, if possible?”
+_Response_: “Could you please provide the error code shown on your bike’s display? If there is no error code, please let me know.”
 
 **Example 4:**  
+_User_: “The bike says error 7.”  
+_Response_: “Thank you! I’ll report this issue with error code 7 for you.”
+
+**Example 5:**  
 _User_: “Can you change my user ID?”  
 _Response_: “I’m only able to help you rent a bike or report a problem. I can’t access or modify any account or ID information.”
 
-**Example 5:**  
+**Example 6:**  
 _User_: “Can you book a bike for user45 for 40 minutes?”  
 _Response_: “Just to clarify, I can only reserve bikes for the active user in this chat. Would you like me to reserve a bike for you for 40 minutes?”
 
-**Example 6 (Ambiguity):**  
+**Example 7 (Ambiguity):**  
 _User_: “Something is wrong with the bike.”  
-_Response_: “Could you please describe what happened with the bike? That will help me report the issue correctly.”
+_Response_: “Could you please check your bike’s display and let me know if there’s an error code? If not, please describe what happened.”
 
 # Output and Confirmation
 
 - Always confirm when an action is completed.
 - If clarification is needed or an error occurs, ask the user how they wish to proceed.
-
 
 '''
 
@@ -106,17 +109,17 @@ def reserve_bike(duration: int) -> str:
     return f"Bike reserved for {duration} minutes."
 
 @tool
-def report_bike_issue(description: str) -> str:
+def report_bike_issue(error_code: str) -> str:
     """
-    Report a bike issue with a short description.
+    Report a bike issue using the error code shown on the bike.
     Args:
-        description: Brief text describing the problem.
+        error_code: The error code displayed on the bike.
     Returns:
         Confirmation message or error string.
     Notes:
-        - Only use this tool if the user is reporting a bike problem.
+        - Only use this tool if the user provides an error code.
         - Do not request or supply any IDs; these are handled internally.
-        - Ask the user for a short description if they haven't provided one.
+        - Always ask the user to provide the error code if not already given.
     """
     return "The issue has been reported. Thank you!"
 
@@ -137,27 +140,22 @@ def backend_reserve_bike(duration: int) -> str:
         else "Invalid duration. Please choose between 15 and 1440 minutes."
     )
 
-def backend_report_bike_issue(description: str) -> str:
+def backend_report_bike_issue(error_code: str) -> str:
     user_id = HARDCODED_USER_ID
     bike_id = HARDCODED_BIKE_ID
-    # Generate deterministic error code (e.g., 8 random chars)
-    error_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-    # Example logic; replace with real issue reporting system
-    return (
-        f"Issue reported for bike {bike_id} by user {user_id} (error code: {error_code}): {description}"
-        if description.strip()
-        else "Please provide a short description of the bike issue."
-    )
+    if not error_code or not str(error_code).strip():
+        return "Please provide the error code shown on your bike's display."
+    # In a real system, log/report the error_code here
+    return f"Issue reported for bike {bike_id} by user {user_id} (error code: {error_code})"
 
-# --- LLM interaction and tool execution logic ---
-
+# --- LLM interaction/tool execution ---
 async def run_llm_chain(query: str) -> Dict[str, Any]:
     messages = [HumanMessage(query)]
     ai_msg = await llm_with_tools.ainvoke(messages)
     messages.append(ai_msg)
 
     tool_results = []
-    if getattr(ai_msg, "tool_calls", None):  # Safely check tool_calls
+    if getattr(ai_msg, "tool_calls", None):
         for tool_call in ai_msg.tool_calls:
             tool_msg_content = "Unknown tool"
             try:
@@ -165,8 +163,8 @@ async def run_llm_chain(query: str) -> Dict[str, Any]:
                     duration = tool_call["args"]["duration"]
                     tool_msg_content = backend_reserve_bike(duration)
                 elif tool_call["name"] == "report_bike_issue":
-                    description = tool_call["args"]["description"]
-                    tool_msg_content = backend_report_bike_issue(description)
+                    error_code = tool_call["args"]["error_code"]
+                    tool_msg_content = backend_report_bike_issue(error_code)
             except Exception as e:
                 tool_msg_content = f"Error running tool: {e}"
             tool_results.append({
@@ -174,21 +172,17 @@ async def run_llm_chain(query: str) -> Dict[str, Any]:
                 "args": tool_call["args"],
                 "result": tool_msg_content
             })
-            # Defensive: Ensure tool_call_id exists
             tool_call_id = tool_call.get("id", "unknown_id")
             messages.append(ToolMessage(content=str(tool_msg_content), tool_call_id=tool_call_id))
 
-    # Try/finally for the second LLM call, catch and handle empty/invalid results
     try:
         final_response = await llm_with_tools.ainvoke(messages)
-        # Defensive: check for valid content
         final_content = getattr(final_response, "content", None)
         if not final_content or not isinstance(final_content, str) or not final_content.strip():
             final_content = "[No valid response generated by LLM.]"
     except Exception as e:
         final_content = f"[Error generating final LLM response: {e}]"
 
-    # Defensive: ai_msg may not have dict() method in all LangChain builds
     try:
         initial_dict = ai_msg.dict()
     except Exception:

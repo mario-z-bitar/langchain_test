@@ -8,220 +8,332 @@
     <style>
         :root {
             --primary-color: #4A90E2;
-            --secondary-color: #6C757D;
-            --background-color: #F4F7F6;
-            --card-background: #FFFFFF;
-            --border-color: #E0E0E0;
-            --text-color: #333333;
-            --light-text-color: #666666;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --border-radius: 8px;
+            --secondary-color: #222b38;
+            --background-color: #141A1F;
+            --card-background: #1C232A;
+            --border-color: #27313B;
+            --text-color: #F2F7FA;
+            --light-text-color: #B0B9C5;
+            --shadow: 0 6px 28px rgba(10, 26, 44, 0.23);
+            --border-radius: 14px;
+            --sidebar-width: 250px;
+            --sidebar-background: #181F25;
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: var(--background-color);
             color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             min-height: 100vh;
-            box-sizing: border-box;
+            display: flex;
         }
 
         .container {
-            width: 100%;
-            max-width: 900px;
-            background-color: var(--card-background);
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+        }
+
+        /* Sidebar for bike selector */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-background);
+            padding: 35px 0 0 0;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.14);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar h2 {
+            color: var(--primary-color);
+            font-size: 1.25em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-color);
+            width: 80%;
+            text-align: left;
+            padding-bottom: 10px;
+        }
+
+        .bike-list {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .bike-option {
+            background: var(--card-background);
             border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 30px;
-            box-sizing: border-box;
+            border: 2px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 10px;
+            transition: border 0.22s, box-shadow 0.22s;
+            color: var(--text-color);
+        }
+
+        .bike-option.selected,
+        .bike-option:hover {
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 2px 10px rgba(74, 144, 226, 0.10);
+        }
+
+        .bike-img {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #232c36;
+            object-fit: cover;
+            border: 1.5px solid #222b38;
+        }
+
+        .bike-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bike-title {
+            font-size: 1em;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .bike-model {
+            font-size: 0.93em;
+            color: var(--light-text-color);
+            font-weight: 400;
+        }
+
+        /* Main chat area */
+        .main-content {
+            flex: 1;
+            padding: 42px 36px;
+            background: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
         }
 
         h1 {
-            text-align: center;
             color: var(--primary-color);
-            margin-bottom: 30px;
-            font-weight: 700;
-            font-size: 2.5em;
+            margin-bottom: 18px;
+            font-weight: 800;
+            font-size: 2.3em;
+            letter-spacing: 0.01em;
         }
 
         h2 {
-            color: var(--text-color);
+            color: var(--light-text-color);
             margin-top: 30px;
             margin-bottom: 15px;
             font-weight: 500;
-            font-size: 1.8em;
+            font-size: 1.23em;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 5px;
         }
 
-        #bike-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            align-items: center;
-        }
-
-        #bike-selector label {
-            font-weight: 500;
-            color: var(--primary-color);
-            margin-right: 8px;
-        }
-
-        #bike-select {
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            background: var(--background-color);
-            font-size: 1em;
-        }
-
         #query-form {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 32px;
+            margin-top: 6px;
         }
 
         #query-input {
             flex-grow: 1;
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
+            padding: 13px 16px;
+            border: 1.5px solid var(--border-color);
             border-radius: var(--border-radius);
-            font-size: 1em;
+            font-size: 1.08em;
+            background: var(--card-background);
+            color: var(--text-color);
             outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         #query-input:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.11);
         }
 
         #send-button {
-            padding: 12px 25px;
+            padding: 13px 28px;
             background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: 1.03em;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            transition: background-color 0.22s, transform 0.17s;
         }
 
         #send-button:hover {
             background-color: #3A7BBF;
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.03);
         }
 
         #send-button:active {
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         #results-container {
-            border: 1px solid var(--border-color);
+            border: 1.5px solid var(--border-color);
             border-radius: var(--border-radius);
-            padding: 20px;
+            padding: 23px;
             min-height: 150px;
-            background-color: var(--background-color);
+            background-color: var(--card-background);
             color: var(--light-text-color);
-            line-height: 1.6;
+            line-height: 1.7;
             overflow-y: auto;
-            max-height: 400px;
+            max-height: 420px;
+            font-size: 1.08em;
+            box-shadow: 0 2px 12px rgba(20,30,44,0.13);
         }
 
         #results-container p {
             margin: 0;
-            padding-bottom: 10px;
+            padding-bottom: 11px;
         }
 
         #results-container p:last-child {
             padding-bottom: 0;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                margin: 10px;
-            }
+        /* Hide default selector */
+        #bike-selector {
+            display: none;
+        }
 
-            h1 {
-                font-size: 2em;
+        @media (max-width: 1050px) {
+            .main-content {
+                padding: 25px 10px;
             }
-
-            h2 {
-                font-size: 1.5em;
+            .sidebar {
+                width: 130px;
+                padding: 12px 0 0 0;
             }
-
-            #bike-selector {
-                flex-direction: column;
-                align-items: flex-start;
+            .sidebar h2 {
+                font-size: 1em;
             }
-
-            #query-form {
-                flex-direction: column;
-            }
-
-            #send-button {
-                width: 100%;
+            .bike-details {
+                display: none;
             }
         }
 
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-
+        @media (max-width: 700px) {
             .container {
-                padding: 15px;
+                flex-direction: column;
             }
-
-            h1 {
-                font-size: 1.8em;
+            .sidebar {
+                flex-direction: row;
+                width: 100vw;
+                height: 80px;
+                box-shadow: 0 2px 8px rgba(10,26,44,0.10);
+                padding: 0 0 0 0;
+                justify-content: center;
+                align-items: center;
             }
-
-            #query-input, #send-button {
-                padding: 10px;
-                font-size: 0.9em;
+            .main-content {
+                padding: 15px 3vw;
+            }
+            .bike-list {
+                flex-direction: row;
+                width: 100%;
+                gap: 8px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Demo Bike Rental UI</h1>
+        <!-- Sidebar: Bike Selector with images -->
+        <aside class="sidebar">
+            <h2>Bikes</h2>
+            <div class="bike-list" id="bike-list">
+                <div class="bike-option selected" data-value="bike-001">
+                    <img class="bike-img" src="https://images.unsplash.com/photo-1505705694340-019e1e335916?q=80&w=2664&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Trek FX3 Disc"/>
+                    <div class="bike-details">
+                        <span class="bike-title">#001</span>
+                        <span class="bike-model">Trek FX3 Disc</span>
+                    </div>
+                </div>
+                <div class="bike-option" data-value="bike-002">
+                    <img class="bike-img" src="https://images.unsplash.com/photo-1507035895480-2b3156c31fc8?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Specialized Turbo Vado"/>
+                    <div class="bike-details">
+                        <span class="bike-title">#002</span>
+                        <span class="bike-model">Specialized Turbo Vado</span>
+                    </div>
+                </div>
+                <div class="bike-option" data-value="bike-003">
+                    <img class="bike-img" src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Giant Quick-E+"/>
+                    <div class="bike-details">
+                        <span class="bike-title">#003</span>
+                        <span class="bike-model">Giant Quick-E+</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-        <!-- Bike Selector: new -->
-        <div id="bike-selector">
-            <label for="bike-select">Select a bike:</label>
-            <select id="bike-select">
-                <option value="bike-001">Bike #001 — Trek FX3 Disc</option>
-                <option value="bike-002">Bike #002 — Specialized Turbo Vado</option>
-                <option value="bike-003">Bike #003 — Giant Quick-E+</option>
-            </select>
-        </div>
+        <!-- Main content -->
+        <main class="main-content">
+            <h1>Demo Bike Rental UI</h1>
 
-        <div id="query-form">
-            <input type="text" id="query-input" placeholder="Ask your LLM agent anything..." aria-label="Enter your query">
-            <button id="send-button" aria-label="Send Query">Send Query</button>
-        </div>
+            <!-- Hidden: the legacy select for bike, still for variable compatibility -->
+            <div id="bike-selector">
+                <label for="bike-select">Select a bike:</label>
+                <select id="bike-select">
+                    <option value="bike-001">Bike #001 — Trek FX3 Disc</option>
+                    <option value="bike-002">Bike #002 — Specialized Turbo Vado</option>
+                    <option value="bike-003">Bike #003 — Giant Quick-E+</option>
+                </select>
+            </div>
 
-        <h2>Agent Responses:</h2>
-        <div id="results-container" role="log" aria-live="polite">
-            <p>Your LLM agent responses will appear here. Start by typing a question above!</p>
-        </div>
+            <div id="query-form">
+                <input type="text" id="query-input" placeholder="Ask your LLM agent anything..." aria-label="Enter your query">
+                <button id="send-button" aria-label="Send Query">Send Query</button>
+            </div>
+
+            <h2>Agent Responses:</h2>
+            <div id="results-container" role="log" aria-live="polite">
+                <p>Your LLM agent responses will appear here. Start by typing a question above!</p>
+            </div>
+        </main>
     </div>
 
+    <script>
+        // --- Bike selection sync logic ---
+        // Sidebar bike selector updates the hidden select value for full backward compatibility
+
+        // Grab references
+        const bikeOptions = document.querySelectorAll('.bike-option');
+        const bikeSelect = document.getElementById('bike-select');
+
+        // Default selected (first)
+        let selectedBike = bikeOptions[0].getAttribute('data-value');
+        bikeSelect.value = selectedBike;
+
+        // Click events to update selection visually and in select input
+        bikeOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                bikeOptions.forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                selectedBike = opt.getAttribute('data-value');
+                bikeSelect.value = selectedBike; // Sync with underlying select input
+            });
+        });
+
+        // (Optional) If needed elsewhere: window.selectedBike will always be correct
+        window.selectedBike = () => bikeSelect.value;
+    </script>
     <script src="script.js"></script>
-    <!-- 
-        You can access the currently selected bike via:
-        document.getElementById('bike-select').value
-        in your script.js, just like you would for any other variable.
-        No other JS is changed here.
-    -->
 </body>
 </html>
