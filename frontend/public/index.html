@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sleek LLM Agent</title>
+    <title>Toy LLM Agent</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -59,6 +59,27 @@
             padding-bottom: 5px;
         }
 
+        #bike-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            align-items: center;
+        }
+
+        #bike-selector label {
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-right: 8px;
+        }
+
+        #bike-select {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            background: var(--background-color);
+            font-size: 1em;
+        }
+
         #query-form {
             display: flex;
             gap: 10px;
@@ -110,7 +131,7 @@
             color: var(--light-text-color);
             line-height: 1.6;
             overflow-y: auto;
-            max-height: 400px; /* Limit height for scrollability */
+            max-height: 400px;
         }
 
         #results-container p {
@@ -122,7 +143,6 @@
             padding-bottom: 0;
         }
 
-        /* Responsive adjustments */
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -135,6 +155,11 @@
 
             h2 {
                 font-size: 1.5em;
+            }
+
+            #bike-selector {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
             #query-form {
@@ -168,7 +193,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>✨ LLM Agent Console ✨</h1>
+        <h1>Demo Bike Rental UI</h1>
+
+        <!-- Bike Selector: new -->
+        <div id="bike-selector">
+            <label for="bike-select">Select a bike:</label>
+            <select id="bike-select">
+                <option value="bike-001">Bike #001 — Trek FX3 Disc</option>
+                <option value="bike-002">Bike #002 — Specialized Turbo Vado</option>
+                <option value="bike-003">Bike #003 — Giant Quick-E+</option>
+            </select>
+        </div>
 
         <div id="query-form">
             <input type="text" id="query-input" placeholder="Ask your LLM agent anything..." aria-label="Enter your query">
@@ -182,5 +217,11 @@
     </div>
 
     <script src="script.js"></script>
+    <!-- 
+        You can access the currently selected bike via:
+        document.getElementById('bike-select').value
+        in your script.js, just like you would for any other variable.
+        No other JS is changed here.
+    -->
 </body>
 </html>
